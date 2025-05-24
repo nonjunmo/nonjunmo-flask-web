@@ -1,10 +1,28 @@
 <!DOCTYPE html>
-<html lang="ko">
-<head>
-    <meta charset="UTF-8">
-    <title>관리자 패널</title>
-</head>
+<html>
+<head><meta charset="UTF-8"><title>관리자 페이지</title></head>
 <body>
-    <h2>관리자 패널 페이지입니다.</h2>
+  <h2>신청자 목록</h2>
+  <div id="admin-list"></div>
+  <script>
+    fetch('/get_applications').then(res => res.json()).then(data => {
+      const adminDiv = document.getElementById('admin-list');
+      for (const [date, users] of Object.entries(data)) {
+        const block = document.createElement('div');
+        block.innerHTML = "<h3>" + date + "</h3>" +
+          "<ul>" + users.map(u => "<li>" + u.name + 
+          " <button onclick=\"deleteUser('" + date + "','" + u.name + "')\">제거</button></li>").join('') + "</ul>";
+        adminDiv.appendChild(block);
+      }
+    });
+
+    function deleteUser(date, name) {
+      fetch('/delete_application', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+        body: 'date=' + date + '&name=' + name
+      }).then(() => location.reload());
+    }
+  </script>
 </body>
 </html>
