@@ -1,43 +1,27 @@
-
 <!DOCTYPE html>
-<html lang="ko">
+<html>
 <head>
     <meta charset="UTF-8">
     <title>논문 초안 완성 코스</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link rel="stylesheet" href="/static/style.css">
 </head>
 <body>
     <header>
         <h1>논문 초안 완성 코스</h1>
-        <h2>주최: 논준모연구소 | 진행: 김성하 소장</h2>
+        <p>주최: 논준모연구소 | 진행: 김성하 소장</p>
     </header>
     <main>
-        <form method="POST" action="/apply">
-            <label>이름: <input type="text" name="name" required></label>
-            <label>연락처: <input type="text" name="phone" required></label>
-            <label>이메일: <input type="email" name="email" required></label>
-            <label>날짜(토요일): <input type="date" name="date" required></label>
-            <label>논문 종류: 
-                <select name="category">
-                    <option>박사논문</option>
-                    <option>석사논문</option>
-                    <option>학회논문</option>
-                    <option>기타논문</option>
-                </select>
-            </label>
-            <label>전공: <input type="text" name="major"></label>
-            <label>관심 주제: <input type="text" name="topic"></label>
-            <label>기타: <textarea name="message"></textarea></label>
+        <h2>신청 페이지</h2>
+        <form action="/apply" method="POST">
+            <label>날짜: <input type="date" name="date" required></label><br>
+            <label>이름: <input type="text" name="name" required></label><br>
+            <label>연락처: <input type="text" name="contact" required></label><br>
             <button type="submit">신청</button>
         </form>
-        <section>
-            <h3>오시는 길</h3>
-            <p>서울시 강남구 광평로 280 로즈데일 OT 2018호</p>
-            <iframe src="https://map.naver.com/p/search/광평로%20280" width="100%" height="400"></iframe>
-        </section>
+        <h3>오늘 날짜: {{ today }}</h3>
     </main>
     <footer>
-        논준모연구소 | 서울시 강남구 광평로 280 로즈데일 OT 2018호<br>
+        논준모연구소 | 서울시 강남구 광평로 280 로즈데일 OT 2018호 <br>
         문의: 02-557-6267 / 010-3661-6267 | 이메일: fox4361@naver.com
     </footer>
 </body>
