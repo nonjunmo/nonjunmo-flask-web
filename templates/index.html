@@ -1,58 +1,44 @@
+
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-  <meta charset="UTF-8">
-  <title>논문 초안 완성 코스</title>
-  <link rel="stylesheet" href="/static/style.css">
-  <script src="/static/script.js" defer></script>
+    <meta charset="UTF-8">
+    <title>논문 초안 완성 코스</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
 <body>
-  <header>
-    <h1>논문 초안 완성 코스</h1>
-    <h3>주최: 논준모연구소 | 진행: 김성하 소장</h3>
-  </header>
-  <main>
-    <div id="calendar-container">
-      <div id="calendar-header">
-        <button onclick="changeMonth(-1)">◀ 이전 달</button>
-        <span id="current-month"></span>
-        <button onclick="changeMonth(1)">다음 달 ▶</button>
-      </div>
-      <table id="calendar"></table>
-    </div>
-    <div id="application-form" style="display:none;">
-      <h2>논문 초안 완성 코스 신청</h2>
-      <form onsubmit="submitApplication(event)">
-        <input type="hidden" id="selected-date" name="date">
-        <label>이름 <input type="text" name="name" required></label>
-        <label>연락처 <input type="text" name="contact" required></label>
-        <label>이메일 <input type="email" name="email" required></label>
-        <label>논문 종류 
-          <select name="type">
-            <option>박사논문</option>
-            <option>석사논문</option>
-            <option>학회논문</option>
-            <option>기타논문</option>
-          </select>
-        </label>
-        <label>전공 학문 <input type="text" name="major"></label>
-        <label>관심 주제 <input type="text" name="topic"></label>
-        <label>기타 하고 싶은 말 <textarea name="etc"></textarea></label>
-        <div class="buttons">
-          <button type="submit">신청</button>
-          <button type="button" onclick="hideForm()">취소</button>
-        </div>
-      </form>
-    </div>
-    <div id="map-section">
-      <h2>오시는 길</h2>
-      <p>서울시 강남구 광평로 280 로즈데일 OT 2018호</p>
-      <iframe src="https://map.naver.com/p/search/광평로%20280" width="100%" height="300" style="border:0;"></iframe>
-    </div>
-  </main>
-  <footer>
-    논준모연구소 | 서울시 강남구 광평로 280 로즈데일 OT 2018호<br>
-    문의: 02-557-6267 / 010-3661-6267 | 이메일: fox4361@naver.com
-  </footer>
+    <header>
+        <h1>논문 초안 완성 코스</h1>
+        <h2>주최: 논준모연구소 | 진행: 김성하 소장</h2>
+    </header>
+    <main>
+        <form method="POST" action="/apply">
+            <label>이름: <input type="text" name="name" required></label>
+            <label>연락처: <input type="text" name="phone" required></label>
+            <label>이메일: <input type="email" name="email" required></label>
+            <label>날짜(토요일): <input type="date" name="date" required></label>
+            <label>논문 종류: 
+                <select name="category">
+                    <option>박사논문</option>
+                    <option>석사논문</option>
+                    <option>학회논문</option>
+                    <option>기타논문</option>
+                </select>
+            </label>
+            <label>전공: <input type="text" name="major"></label>
+            <label>관심 주제: <input type="text" name="topic"></label>
+            <label>기타: <textarea name="message"></textarea></label>
+            <button type="submit">신청</button>
+        </form>
+        <section>
+            <h3>오시는 길</h3>
+            <p>서울시 강남구 광평로 280 로즈데일 OT 2018호</p>
+            <iframe src="https://map.naver.com/p/search/광평로%20280" width="100%" height="400"></iframe>
+        </section>
+    </main>
+    <footer>
+        논준모연구소 | 서울시 강남구 광평로 280 로즈데일 OT 2018호<br>
+        문의: 02-557-6267 / 010-3661-6267 | 이메일: fox4361@naver.com
+    </footer>
 </body>
 </html>

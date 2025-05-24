@@ -1,69 +1,81 @@
-from flask import Flask, render_template, request, redirect, url_for, session, jsonify
-import os
+
+from flask import Flask, render_template, request, redirect, url_for, session
+from datetime import datetime, timedelta
 import json
-from datetime import datetime
+import os
 
 app = Flask(__name__)
-app.secret_key = 'nonjunmo-secret'
+app.secret_key = 'supersecret'
+DATA_FILE = 'data.json'
+ADMIN_PASSWORD = 'miso0404^^'
 
-DATA_FILE = 'applications.json'
+def load_data():
+    if not os.path.exists(DATA_FILE):
+        return {}
+    with open(DATA_FILE, 'r', encoding='utf-8') as f:
+        return json.load(f)
 
-def load_applications():
-    if os.path.exists(DATA_FILE):
-        with open(DATA_FILE, 'r', encoding='utf-8') as f:
-            return json.load(f)
-    return {}
-
-def save_applications(data):
+def save_data(data):
     with open(DATA_FILE, 'w', encoding='utf-8') as f:
         json.dump(data, f, ensure_ascii=False, indent=2)
 
 @app.route('/')
 def index():
-    return render_template('index.html')
+    today = datetime.today()
+    return render_template('index.html', today=today.strftime('%Y-%m-%d'))
+
+@app.route('/apply', methods=['POST'])
+def apply():
+    data = load_data()
+    name = request.form['name']
+    phone = request.form['phone']
+    email = request.form['email']
+    date = request.form['date']
+    major = request.form['major']
+    topic = request.form['topic']
+    category = request.form['category']
+    message = request.form['message']
+    if date not in data:
+        data[date] = []
+    if len(data[date]) < 5:
+        data[date].append({
+            'name': name,
+            'phone': phone,
+            'email': email,
+            'category': category,
+            'major': major,
+            'topic': topic,
+            'message': message
+        })
+        save_data(data)
+    return redirect(url_for('index'))
 
 @app.route('/admin', methods=['GET', 'POST'])
 def admin():
     if request.method == 'POST':
-        if request.form.get('password') == 'miso0404^^':
+        if request.form['password'] == ADMIN_PASSWORD:
             session['admin'] = True
-            return redirect(url_for('admin_panel'))
-        return '비밀번호가 틀렸습니다.'
+            return redirect(url_for('dashboard'))
     return render_template('admin_login.html')
 
-@app.route('/admin-panel')
-def admin_panel():
+@app.route('/dashboard')
+def dashboard():
     if not session.get('admin'):
         return redirect(url_for('admin'))
-    return render_template('admin_panel.html')
+    data = load_data()
+    return render_template('admin.html', data=data)
 
-@app.route('/apply', methods=['POST'])
-def apply():
-    data = request.form.to_dict()
-    date = data.get('date')
-    applications = load_applications()
-    if date not in applications:
-        applications[date] = []
-    applications[date].append(data)
-    save_applications(applications)
-    return jsonify(success=True)
-
-@app.route('/get_applications')
-def get_applications():
-    return jsonify(load_applications())
-
-@app.route('/delete_application', methods=['POST'])
-def delete_application():
-    date = request.form.get('date')
-    name = request.form.get('name')
-    applications = load_applications()
-    if date in applications:
-        applications[date] = [app for app in applications[date] if app['name'] != name]
-        if not applications[date]:
-            del applications[date]
-        save_applications(applications)
-    return jsonify(success=True)
+@app.route('/delete/<date>/<int:index>')
+def delete(date, index):
+    if not session.get('admin'):
+        return redirect(url_for('admin'))
+    data = load_data()
+    if date in data and 0 <= index < len(data[date]):
+        del data[date][index]
+        if not data[date]:
+            del data[date]
+        save_data(data)
+    return redirect(url_for('dashboard'))
 
 if __name__ == '__main__':
-    port = int(os.environ.get('PORT', 10000))
-    app.run(host='0.0.0.0', port=port)
+    app.run(debug=True)
