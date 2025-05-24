@@ -30,4 +30,6 @@ def admin_panel():
     return '<h1>관리자 페이지</h1>'
 
 if __name__ == '__main__':
-    app.run()
+    import os
+    port = int(os.environ.get('PORT', 10000))
+    app.run(host='0.0.0.0', port=port)
